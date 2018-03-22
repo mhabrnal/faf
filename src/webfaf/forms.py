@@ -229,11 +229,6 @@ class ReportFilterForm(Form):
 
     component_names = TextField()
 
-    first_occurrence_daterange = DaterangeField(
-        "First occurrence",
-        validators=[validators.Optional()],
-        default_days=None)
-
     last_occurrence_daterange = DaterangeField(
         "Last occurrence",
         validators=[validators.Optional()],
@@ -249,7 +244,6 @@ class ReportFilterForm(Form):
 
     order_by = SelectField("Order by", choices=[
         ("last_occurrence", "Last occurrence"),
-        ("first_occurrence", "First occurrence"),
         ("count", "Count")],
         default="last_occurrence")
 
@@ -263,7 +257,6 @@ class ReportFilterForm(Form):
             tuple(self.arch.data or []),
             tuple(self.type.data or []),
             tuple(sorted(self.component_names.data or [])),
-            tuple(self.first_occurrence_daterange.data or []),
             tuple(self.last_occurrence_daterange.data or []),
             tuple(self.order_by.data or []),
             tuple(sorted(self.opsysreleases.data or []))))).hexdigest()

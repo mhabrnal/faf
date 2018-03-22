@@ -75,7 +75,6 @@ from forms import (ReportFilterForm, NewReportForm, NewAttachmentForm,
 
 def query_reports(db, opsysrelease_ids=[], component_ids=[],
                   associate_id=None, arch_ids=[], types=[],
-                  first_occurrence_since=None, first_occurrence_to=None,
                   last_occurrence_since=None, last_occurrence_to=None,
                   limit=None, offset=None, order_by="last_occurrence",
                   solution=None):
@@ -93,8 +92,6 @@ def query_reports(db, opsysrelease_ids=[], component_ids=[],
                           .subquery())
 
     final_query = (db.session.query(Report.id,
-                                    Report.first_occurrence.label(
-                                        "first_occurrence"),
                                     Report.last_occurrence.label(
                                         "last_occurrence"),
                                     comp_query.c.component,
@@ -141,13 +138,6 @@ def query_reports(db, opsysrelease_ids=[], component_ids=[],
     if types:
         final_query = final_query.filter(Report.type.in_(types))
 
-    if first_occurrence_since:
-        final_query = final_query.filter(
-            Report.first_occurrence >= first_occurrence_since)
-    if first_occurrence_to:
-        final_query = final_query.filter(
-            Report.first_occurrence <= first_occurrence_to)
-
     if last_occurrence_since:
         final_query = final_query.filter(
             Report.last_occurrence >= last_occurrence_since)
@@ -188,10 +178,6 @@ def get_reports(filter_form, pagination):
         associate_id=associate_id,
         arch_ids=arch_ids,
         types=types,
-        first_occurrence_since=filter_form.first_occurrence_daterange.data
-        and filter_form.first_occurrence_daterange.data[0],
-        first_occurrence_to=filter_form.first_occurrence_daterange.data
-        and filter_form.first_occurrence_daterange.data[1],
         last_occurrence_since=filter_form.last_occurrence_daterange.data
         and filter_form.last_occurrence_daterange.data[0],
         last_occurrence_to=filter_form.last_occurrence_daterange.data
